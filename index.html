@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PSH League</title>
+<style>
+  :root {
+    --field-green: #1f3d2e;
+    --field-green-dark: #142820;
+    --chalk: #f2efe6;
+    --gold: #c9a227;
+    --danger: #7a1f1f;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--field-green);
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 2px,
+        transparent 2px,
+        transparent 60px
+      );
+    color: var(--chalk);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .screen {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .screen.active {
+    display: flex;
+  }
+
+  .login-card {
+    background: var(--field-green-dark);
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+    padding: 48px 40px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .login-card h1 {
+    font-size: 1.6rem;
+    letter-spacing: 0.5px;
+    margin: 0 0 8px 0;
+    color: var(--gold);
+  }
+
+  .login-card p {
+    margin: 0 0 28px 0;
+    font-size: 1rem;
+    color: var(--chalk);
+  }
+
+  .login-card input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    background: var(--chalk);
+    color: #1a1a1a;
+    font-family: inherit;
+  }
+
+  .login-card button {
+    margin-top: 16px;
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    border: none;
+    border-radius: 3px;
+    background: var(--gold);
+    color: var(--field-green-dark);
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .login-card button:hover {
+    filter: brightness(1.08);
+  }
+
+  .error-msg {
+    margin-top: 14px;
+    color: #ffb3b3;
+    font-size: 0.9rem;
+    min-height: 1.2em;
+  }
+
+  .wrong-screen {
+    background: var(--danger);
+    text-align: center;
+  }
+
+  .wrong-screen h1 {
+    font-size: 2rem;
+    line-height: 1.4;
+    max-width: 600px;
+    padding: 0 20px;
+  }
+
+  .welcome-screen {
+    background: var(--chalk);
+  }
+
+  .welcome-box {
+    background: #ffffff;
+    border: 3px solid #000000;
+    color: #000000;
+    padding: 40px 36px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    border-radius: 2px;
+  }
+
+  .welcome-box h1 {
+    margin: 0 0 16px 0;
+    font-size: 1.8rem;
+  }
+
+  .welcome-box p {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .welcome-box .contact {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- NODE: login_screen -->
+  <div id="login_screen" class="screen active">
+    <div class="login-card">
+      <h1>Welcome to PSH League</h1>
+      <p>Enter password</p>
+      <input type="password" id="password_input" placeholder="Enter password here" autocomplete="off">
+      <button id="submit_btn">Enter</button>
+      <div class="error-msg" id="error_msg"></div>
+    </div>
+  </div>
+
+  <!-- NODE: wrong_password -->
+  <div id="wrong_password" class="screen wrong-screen">
+    <h1>WRONG!! BEGONE FROM HERE!!!</h1>
+  </div>
+
+  <!-- NODE: pshleague_welcome -->
+  <div id="pshleague_welcome" class="screen welcome-screen">
+    <div class="welcome-box">
+      <h1>Welcome to PSH League</h1>
+      <p>This website is under construction.</p>
+      <p class="contact">For any questions, text "horseneck" to [add your number here]</p>
+    </div>
+  </div>
+
+<script>
+  const CORRECT_PASSWORD = "bo$h420";
+
+  const screens = {
+    login: document.getElementById('login_screen'),
+    wrong: document.getElementById('wrong_password'),
+    welcome: document.getElementById('pshleague_welcome')
+  };
+
+  function goto(screenKey) {
+    Object.values(screens).forEach(s => s.classList.remove('active'));
+    screens[screenKey].classList.add('active');
+  }
+
+  function checkPassword() {
+    const input = document.getElementById('password_input');
+    const errorMsg = document.getElementById('error_msg');
+
+    if (input.value === CORRECT_PASSWORD) {
+      errorMsg.textContent = '';
+      goto('welcome');
+    } else {
+      errorMsg.textContent = 'Incorrect password. Try again.';
+      goto('wrong');
+    }
+  }
+
+  document.getElementById('submit_btn').addEventListener('click', checkPassword);
+  document.getElementById('password_input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkPassword();
+  });
+</script>
+
+</body>
+</html>
