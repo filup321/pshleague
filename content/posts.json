@@ -4,21 +4,39 @@
       "type": "blog",
       "title": "Welcome to the PSH League site",
       "date": "2026-09-07",
-      "author": "Commissioner",
-      "body": "This is a sample post so you can see how things look.\n\nEdit or delete it from the **/admin** page. You can write in *markdown* — headings, **bold**, lists, links, all work.",
+      "author": "Commissioner Connor",
+      "author_image": "/media/uploads/commissioner-connor.jpg",
+      "body": "The purpose of this site was came about as a way to easily look up funny videos & pictures shared with league. As well as any updates so you don't have to scroll through texts and in case Zack's imessage doesn't update in real time",
       "image": "",
       "video_url": "",
       "gallery": []
     },
     {
       "type": "video",
-      "title": "Sample highlight",
-      "date": "2026-09-06",
+      "title": "Roy's Combine",
+      "date": "2026-09-07",
       "author": "PSH League",
-      "body": "Paste any YouTube or Vimeo link in the Video URL field and it embeds automatically.",
+      "author_image": "",
+      "body": "",
       "image": "",
-      "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "video_url": "https://drive.google.com/file/d/15NvKl96wXpuK4js8ooyqGEGgHHXrv2XE/view?usp=sharing",
       "gallery": []
+    },
+    {
+      "type": "picture",
+      "title": "Doug Sign",
+      "date": "2026-09-07",
+      "author": "PSH League",
+      "author_image": "",
+      "body": "",
+      "image": "",
+      "video_url": "",
+      "gallery": [
+        { "src": "/media/uploads/doug-sign-1.jpg" },
+        { "src": "/media/uploads/doug-sign-2.jpg" },
+        { "src": "/media/uploads/doug-sign-3.jpg" },
+        { "src": "/media/uploads/doug-sign-4.jpg" }
+      ]
     }
   ]
 }

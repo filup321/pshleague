@@ -44,6 +44,7 @@ collections:
               - { name: date, label: "Date", widget: datetime,
                   date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
               - { name: author, label: "Author", widget: string, required: false, default: "PSH League" }
+              - { name: author_image, label: "Author photo (shown as a round avatar on the post)", widget: image, required: false }
               - { name: body, label: "Body (markdown)", widget: markdown, required: false }
               - { name: image, label: "Main image", widget: image, required: false }
               - { name: video_url, label: "Video URL (YouTube / Vimeo)", widget: string, required: false }
@@ -61,8 +62,9 @@ collections:
           - { name: marquee_text, label: "Scrolling banner text", widget: string }
           - { name: contact_number, label: "Contact number (footer)", widget: string, required: false }
           - { name: visitor_count, label: "Visitor counter (cosmetic)", widget: string, required: false }
+          - { name: stats_pdf, label: "Stats PDF (shown on the Stats section)", widget: file, required: false }
           - name: standings
-            label: "Standings"
+            label: "Standings (only shown if no Stats PDF is set)"
             widget: list
             required: false
             summary: "{{fields.team}}  ({{fields.wins}}-{{fields.losses}})"

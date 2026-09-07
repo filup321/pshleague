@@ -119,6 +119,20 @@ gives you the same kind of admin UI with no worker to run. You'd recreate the
 `admin/config.yml` fields as a `.pages.yml` file at the repo root. The site
 (`index.html`) doesn't change — it just reads `content/posts.json` either way.
 
+## Notes on media
+
+- **Photos:** upload `.jpg` / `.png`. Phone photos in `.heic` / `.HEIC` do **not**
+  display in browsers — convert first. On a Mac: open in Preview -> File -> Export -> JPEG,
+  or `sips -s format jpeg in.heic --out out.jpg`. If a converted photo shows up
+  sideways, its EXIF "orientation" tag is fighting the pixels; re-export from
+  Preview (which bakes the rotation in) and it'll be fine.
+- **Videos:** paste a link, don't upload the file.
+  - YouTube / Vimeo: any normal share URL works.
+  - Google Drive: the file must be shared **"Anyone with the link"**, then paste
+    the `https://drive.google.com/file/d/.../view` URL. It embeds as a player.
+- **Stats PDF:** set it in Site settings -> "Stats PDF". It renders on the page
+  (all pages, no download) with an "open in new tab" link as a fallback.
+
 ## Local preview
 
 ```bash
