@@ -3,213 +3,365 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PSH League</title>
+<title>PSH League - Home</title>
 <style>
-  :root {
-    --field-green: #1f3d2e;
-    --field-green-dark: #142820;
-    --chalk: #f2efe6;
-    --gold: #c9a227;
-    --danger: #7a1f1f;
-  }
-
   * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    min-height: 100vh;
-    font-family: Georgia, 'Times New Roman', serif;
-    background: var(--field-green);
-    background-image:
-      repeating-linear-gradient(
-        90deg,
-        rgba(255,255,255,0.03) 0px,
-        rgba(255,255,255,0.03) 2px,
-        transparent 2px,
-        transparent 60px
-      );
-    color: var(--chalk);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .screen {
-    display: none;
-    width: 100%;
-    min-height: 100vh;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
-
-  .screen.active {
-    display: flex;
-  }
-
-  .login-card {
-    background: var(--field-green-dark);
-    border: 2px solid var(--gold);
-    border-radius: 4px;
-    padding: 48px 40px;
-    max-width: 380px;
-    width: 100%;
-    text-align: center;
-  }
-
-  .login-card h1 {
-    font-size: 1.6rem;
-    letter-spacing: 0.5px;
-    margin: 0 0 8px 0;
-    color: var(--gold);
-  }
-
-  .login-card p {
-    margin: 0 0 28px 0;
-    font-size: 1rem;
-    color: var(--chalk);
-  }
-
-  .login-card input[type="password"] {
-    width: 100%;
-    padding: 12px 14px;
-    font-size: 1rem;
-    border: 1px solid var(--gold);
-    border-radius: 3px;
-    background: var(--chalk);
-    color: #1a1a1a;
-    font-family: inherit;
-  }
-
-  .login-card button {
-    margin-top: 16px;
-    width: 100%;
-    padding: 12px 14px;
-    font-size: 1rem;
-    font-family: inherit;
-    border: none;
-    border-radius: 3px;
-    background: var(--gold);
-    color: var(--field-green-dark);
-    cursor: pointer;
-    font-weight: bold;
-  }
-
-  .login-card button:hover {
-    filter: brightness(1.08);
-  }
-
-  .error-msg {
-    margin-top: 14px;
-    color: #ffb3b3;
-    font-size: 0.9rem;
-    min-height: 1.2em;
-  }
-
-  .wrong-screen {
-    background: var(--danger);
-    text-align: center;
-  }
-
-  .wrong-screen h1 {
-    font-size: 2rem;
-    line-height: 1.4;
-    max-width: 600px;
-    padding: 0 20px;
-  }
-
-  .welcome-screen {
-    background: var(--chalk);
-  }
-
-  .welcome-box {
-    background: #ffffff;
-    border: 3px solid #000000;
+    background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23ffffff'/%3E%3Ccircle cx='2' cy='2' r='1' fill='%23dddddd'/%3E%3C/svg%3E");
     color: #000000;
-    padding: 40px 36px;
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-    border-radius: 2px;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 13px;
   }
 
-  .welcome-box h1 {
-    margin: 0 0 16px 0;
-    font-size: 1.8rem;
-  }
+  a { color: #0000cc; }
+  a:visited { color: #660099; }
 
-  .welcome-box p {
-    margin: 0 0 10px 0;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-
-  .welcome-box .contact {
+  /* ===== MARQUEE BANNER ===== */
+  .marquee-bar {
+    background: #000000;
+    color: #ffcc00;
+    padding: 4px 0;
+    font-family: "Comic Sans MS", cursive;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 14px;
+    border-bottom: 3px double #ffcc00;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .marquee-bar marquee { display: inline-block; }
+
+  /* ===== HEADER ===== */
+  .site-header {
+    text-align: center;
+    padding: 18px 10px 10px;
+    background: #ffffff;
+    border-bottom: 4px solid #000000;
+  }
+
+  .site-header h1 {
+    font-family: "Comic Sans MS", cursive;
+    font-size: 42px;
+    margin: 0;
+    color: #cc0066;
+    text-shadow: 2px 2px 0 #ffcc00, 4px 4px 0 #000000;
+    letter-spacing: 1px;
+  }
+
+  .site-header .tagline {
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #333333;
+    margin-top: 4px;
+  }
+
+  /* ===== LAYOUT ===== */
+  .page-wrap {
+    display: table;
+    width: 100%;
+    max-width: 1000px;
+    margin: 14px auto;
+    border: 3px solid #000000;
+    background: #ffffff;
+  }
+
+  .row { display: table-row; }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    display: table-cell;
+    width: 180px;
+    background: #c0c0c0;
+    color: #000000;
+    vertical-align: top;
+    padding: 14px 10px;
+    border-right: 3px solid #000000;
+  }
+
+  .sidebar h2 {
+    font-family: "Comic Sans MS", cursive;
+    font-size: 15px;
+    background: #808080;
+    color: #ffffff;
+    padding: 4px 6px;
+    margin: 0 0 10px 0;
+    border: 2px outset #ffffff;
+    text-align: center;
+  }
+
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+  }
+
+  .sidebar li {
+    margin-bottom: 8px;
+  }
+
+  .sidebar a {
+    display: block;
+    background: #d9d9d9;
+    border: 2px outset #ffffff;
+    padding: 6px 8px;
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  .sidebar a:before {
+    content: "\2605 ";
+    color: #cc0066;
+  }
+
+  .sidebar a:hover {
+    background: #ff99cc;
+    border: 2px inset #ffffff;
+  }
+
+  .counter-box {
+    text-align: center;
     margin-top: 20px;
+  }
+
+  .counter-box .odometer {
+    background: #000000;
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 2px;
+    padding: 4px 6px;
+    border: 2px inset #ffffff;
+    display: inline-block;
+  }
+
+  .counter-box p {
+    font-size: 10px;
+    margin: 4px 0 0 0;
+    color: #333333;
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    display: table-cell;
+    vertical-align: top;
+    padding: 16px 20px;
+    background: #ffffff;
+  }
+
+  .section-title {
+    font-family: "Comic Sans MS", cursive;
+    font-size: 20px;
+    color: #ffffff;
+    background: #cc0066;
+    padding: 6px 10px;
+    margin: 0 0 14px 0;
+    border: 2px solid #000000;
+  }
+
+  .section-title.alt {
+    background: #0066cc;
+  }
+
+  /* ===== POST BOXES ===== */
+  .post-box {
+    border: 2px solid #000000;
+    background: #fdfdea;
+    box-shadow: 3px 3px 0 #808080;
+    margin-bottom: 16px;
+    padding: 0;
+  }
+
+  .post-box .post-header {
+    background: #000000;
+    color: #ffcc00;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 4px 8px;
+    font-family: "Courier New", monospace;
+  }
+
+  .post-box .post-body {
+    padding: 10px 12px;
+  }
+
+  .post-box .post-title {
+    font-family: "Comic Sans MS", cursive;
+    font-size: 16px;
+    color: #cc0066;
+    margin: 0 0 6px 0;
+  }
+
+  .post-box .post-desc {
+    margin: 0 0 8px 0;
+    line-height: 1.5;
+    color: #000000;
+  }
+
+  .post-box .post-link {
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .post-box .post-link:before {
+    content: "\25B6 ";
+  }
+
+  .post-box.empty-box {
+    background: #f5f5f5;
+    box-shadow: none;
+    text-align: center;
+  }
+
+  .post-box.empty-box .post-desc {
+    color: #666666;
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* ===== NEWSLETTER ===== */
+  .newsletter-box {
+    border: 3px dashed #cc0066;
+    background: #fff0f7;
+    padding: 14px 16px;
+    margin-top: 24px;
+    text-align: center;
+  }
+
+  .newsletter-box h3 {
+    font-family: "Comic Sans MS", cursive;
+    font-size: 18px;
+    color: #cc0066;
+    margin: 0 0 6px 0;
+  }
+
+  .newsletter-box p {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+  }
+
+  .newsletter-box .form-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .newsletter-box input[type="email"] {
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    padding: 6px 8px;
+    border: 2px inset #ffffff;
+    width: 220px;
+    max-width: 60vw;
+  }
+
+  .newsletter-box button {
+    font-family: "Comic Sans MS", cursive;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 6px 16px;
+    background: linear-gradient(#ffee99, #ffcc00);
+    border: 2px outset #ffffff;
+    color: #000000;
+    cursor: pointer;
+  }
+
+  .newsletter-box button:active {
+    border: 2px inset #ffffff;
+  }
+
+  .newsletter-note {
+    font-size: 10px;
+    color: #666666;
+    margin-top: 8px;
+  }
+
+  /* ===== FOOTER ===== */
+  .site-footer {
+    text-align: center;
+    padding: 12px;
+    font-size: 11px;
+    color: #333333;
+    border-top: 4px solid #000000;
+  }
+
+  .site-footer .blink-badge {
+    background: #ff0000;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 1px 6px;
+    font-size: 10px;
+    margin-left: 4px;
+  }
+
+  @media (max-width: 700px) {
+    .page-wrap, .row, .sidebar, .main-content {
+      display: block;
+      width: 100%;
+    }
+    .sidebar {
+      border-right: none;
+      border-bottom: 3px solid #000000;
+    }
   }
 </style>
 </head>
 <body>
 
-  <!-- NODE: login_screen -->
-  <div id="login_screen" class="screen active">
-    <div class="login-card">
-      <h1>Welcome to PSH League</h1>
-      <p>Enter password</p>
-      <input type="password" id="password_input" placeholder="Enter password here" autocomplete="off">
-      <button id="submit_btn">Enter</button>
-      <div class="error-msg" id="error_msg"></div>
+  <div class="marquee-bar">
+    <marquee behavior="scroll" direction="left" scrollamount="4">
+      Welcome to PSH League - Draft Monday September 7th at 5:30 PDT
+    </marquee>
+  </div>
+
+  <div class="site-header">
+    <h1>PSH League</h1>
+    <div class="tagline">pssshhh</div>
+  </div>
+
+  <div class="page-wrap">
+    <div class="row">
+
+      <div class="sidebar">
+        <h2>Navigate</h2>
+        <ul>
+          <li><a href="#blogs">Blogs</a></li>
+          <li><a href="#videos">Videos</a></li>
+          <li><a href="#pictures">Pictures</a></li>
+          <li><a href="#stats">Stats</a></li>
+        </ul>
+
+        <div class="counter-box">
+          <div class="odometer">000420</div>
+          <p>visitors so far</p>
+        </div>
+      </div>
+
+      <div class="main-content">
+
+        <div class="section-title">Recent Posts</div>
+
+        <div class="post-box empty-box">
+          <div class="post-body">
+            <p class="post-desc">No posts yet. Check back soon.</p>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </div>
 
-  <!-- NODE: wrong_password -->
-  <div id="wrong_password" class="screen wrong-screen">
-    <h1>WRONG!! BEGONE FROM HERE!!!</h1>
+  <div class="site-footer">
+    &copy; 2026 PSH League. This page is under construction.
+    <span class="blink-badge">NEW</span>
   </div>
-
-  <!-- NODE: pshleague_welcome -->
-  <div id="pshleague_welcome" class="screen welcome-screen">
-    <div class="welcome-box">
-      <h1>Welcome to PSH League</h1>
-      <p>This website is under construction.</p>
-      <p class="contact">For any questions, text "horseneck" to [add your number here]</p>
-    </div>
-  </div>
-
-<script>
-  const CORRECT_PASSWORD = "bo$h420";
-
-  const screens = {
-    login: document.getElementById('login_screen'),
-    wrong: document.getElementById('wrong_password'),
-    welcome: document.getElementById('pshleague_welcome')
-  };
-
-  function goto(screenKey) {
-    Object.values(screens).forEach(s => s.classList.remove('active'));
-    screens[screenKey].classList.add('active');
-  }
-
-  function checkPassword() {
-    const input = document.getElementById('password_input');
-    const errorMsg = document.getElementById('error_msg');
-
-    if (input.value === CORRECT_PASSWORD) {
-      errorMsg.textContent = '';
-      goto('welcome');
-    } else {
-      errorMsg.textContent = 'Incorrect password. Try again.';
-      goto('wrong');
-    }
-  }
-
-  document.getElementById('submit_btn').addEventListener('click', checkPassword);
-  document.getElementById('password_input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') checkPassword();
-  });
-</script>
 
 </body>
 </html>
