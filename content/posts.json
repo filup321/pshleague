@@ -1,0 +1,24 @@
+{
+  "posts": [
+    {
+      "type": "blog",
+      "title": "Welcome to the PSH League site",
+      "date": "2026-09-07",
+      "author": "Commissioner",
+      "body": "This is a sample post so you can see how things look.\n\nEdit or delete it from the **/admin** page. You can write in *markdown* — headings, **bold**, lists, links, all work.",
+      "image": "",
+      "video_url": "",
+      "gallery": []
+    },
+    {
+      "type": "video",
+      "title": "Sample highlight",
+      "date": "2026-09-06",
+      "author": "PSH League",
+      "body": "Paste any YouTube or Vimeo link in the Video URL field and it embeds automatically.",
+      "image": "",
+      "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "gallery": []
+    }
+  ]
+}

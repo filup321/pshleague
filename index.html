@@ -18,6 +18,74 @@
   a { color: #0000cc; }
   a:visited { color: #660099; }
 
+  /* ===== PASSWORD GATE ===== */
+  .gate {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #1f3d2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .gate.hidden { display: none; }
+
+  .gate-card {
+    background: #ffffff;
+    border: 3px solid #000000;
+    box-shadow: 6px 6px 0 #000000;
+    padding: 32px 28px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .gate-card h1 {
+    font-family: "Comic Sans MS", cursive;
+    font-size: 26px;
+    color: #cc0066;
+    text-shadow: 2px 2px 0 #ffcc00;
+    margin: 0 0 18px 0;
+  }
+
+  .gate-card label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+    text-align: left;
+  }
+
+  .gate-card input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 2px inset #ffffff;
+    font-family: Verdana, sans-serif;
+  }
+
+  .gate-card button {
+    margin-top: 14px;
+    width: 100%;
+    padding: 10px;
+    font-family: "Comic Sans MS", cursive;
+    font-weight: bold;
+    font-size: 14px;
+    background: linear-gradient(#ffee99, #ffcc00);
+    border: 2px outset #ffffff;
+    cursor: pointer;
+  }
+
+  .gate-card button:active { border: 2px inset #ffffff; }
+
+  .gate-error {
+    color: #cc0000;
+    font-weight: bold;
+    min-height: 1.2em;
+    margin-top: 10px;
+  }
+
   /* ===== MARQUEE BANNER ===== */
   .marquee-bar {
     background: #000000;
@@ -98,9 +166,7 @@
     margin: 0 0 20px 0;
   }
 
-  .sidebar li {
-    margin-bottom: 8px;
-  }
+  .sidebar li { margin-bottom: 8px; }
 
   .sidebar a {
     display: block;
@@ -160,13 +226,12 @@
     color: #ffffff;
     background: #cc0066;
     padding: 6px 10px;
-    margin: 0 0 14px 0;
+    margin: 22px 0 14px 0;
     border: 2px solid #000000;
   }
 
-  .section-title.alt {
-    background: #0066cc;
-  }
+  .section-title:first-child { margin-top: 0; }
+  .section-title.alt { background: #0066cc; }
 
   /* ===== POST BOXES ===== */
   .post-box {
@@ -186,9 +251,7 @@
     font-family: "Courier New", monospace;
   }
 
-  .post-box .post-body {
-    padding: 10px 12px;
-  }
+  .post-box .post-body { padding: 10px 12px; }
 
   .post-box .post-title {
     font-family: "Comic Sans MS", cursive;
@@ -203,14 +266,45 @@
     color: #000000;
   }
 
-  .post-box .post-link {
-    font-weight: bold;
-    font-size: 12px;
+  .post-box .post-desc img { border: 1px solid #000; }
+  .post-box .post-desc h1,
+  .post-box .post-desc h2,
+  .post-box .post-desc h3 { font-family: "Comic Sans MS", cursive; color: #0066cc; }
+
+  .post-main-image {
+    display: block;
+    max-width: 100%;
+    border: 2px solid #000000;
+    margin: 0 0 10px 0;
   }
 
-  .post-box .post-link:before {
-    content: "\25B6 ";
+  .video-embed {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    border: 2px solid #000000;
+    margin-bottom: 10px;
+    background: #000;
   }
+
+  .video-embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .gallery a { display: block; border: 2px solid #000; }
+  .gallery img { display: block; width: 100%; height: 110px; object-fit: cover; }
 
   .post-box.empty-box {
     background: #f5f5f5;
@@ -224,62 +318,27 @@
     margin: 0;
   }
 
-  /* ===== NEWSLETTER ===== */
-  .newsletter-box {
-    border: 3px dashed #cc0066;
-    background: #fff0f7;
-    padding: 14px 16px;
-    margin-top: 24px;
-    text-align: center;
+  /* ===== STANDINGS ===== */
+  .standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fdfdea;
+    border: 2px solid #000000;
+    box-shadow: 3px 3px 0 #808080;
   }
 
-  .newsletter-box h3 {
-    font-family: "Comic Sans MS", cursive;
-    font-size: 18px;
-    color: #cc0066;
-    margin: 0 0 6px 0;
+  .standings-table th,
+  .standings-table td {
+    border: 1px solid #000000;
+    padding: 6px 10px;
+    text-align: left;
   }
 
-  .newsletter-box p {
-    margin: 0 0 12px 0;
-    font-size: 12px;
-  }
-
-  .newsletter-box .form-row {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .newsletter-box input[type="email"] {
-    font-family: Verdana, sans-serif;
-    font-size: 12px;
-    padding: 6px 8px;
-    border: 2px inset #ffffff;
-    width: 220px;
-    max-width: 60vw;
-  }
-
-  .newsletter-box button {
-    font-family: "Comic Sans MS", cursive;
-    font-weight: bold;
-    font-size: 13px;
-    padding: 6px 16px;
-    background: linear-gradient(#ffee99, #ffcc00);
-    border: 2px outset #ffffff;
-    color: #000000;
-    cursor: pointer;
-  }
-
-  .newsletter-box button:active {
-    border: 2px inset #ffffff;
-  }
-
-  .newsletter-note {
-    font-size: 10px;
-    color: #666666;
-    margin-top: 8px;
+  .standings-table th {
+    background: #000000;
+    color: #ffcc00;
+    font-family: "Courier New", monospace;
+    font-size: 11px;
   }
 
   /* ===== FOOTER ===== */
@@ -314,9 +373,20 @@
 </head>
 <body>
 
+  <!-- ===== PASSWORD GATE ===== -->
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <h1>PSH League</h1>
+      <label for="gate_input">Password</label>
+      <input type="password" id="gate_input" autocomplete="off" autofocus>
+      <button id="gate_btn">Enter</button>
+      <div class="gate-error" id="gate_error"></div>
+    </div>
+  </div>
+
   <div class="marquee-bar">
-    <marquee behavior="scroll" direction="left" scrollamount="4">
-      Welcome to PSH League - Draft Monday September 7th at 5:30 PDT
+    <marquee behavior="scroll" direction="left" scrollamount="4" id="marquee_text">
+      Welcome to PSH League
     </marquee>
   </div>
 
@@ -338,20 +408,24 @@
         </ul>
 
         <div class="counter-box">
-          <div class="odometer">000420</div>
+          <div class="odometer" id="visitor_count">000000</div>
           <p>visitors so far</p>
         </div>
       </div>
 
       <div class="main-content">
 
-        <div class="section-title">Recent Posts</div>
+        <div class="section-title" id="blogs">Blogs</div>
+        <div id="blogs_list"></div>
 
-        <div class="post-box empty-box">
-          <div class="post-body">
-            <p class="post-desc">No posts yet. Check back soon.</p>
-          </div>
-        </div>
+        <div class="section-title alt" id="videos">Videos</div>
+        <div id="videos_list"></div>
+
+        <div class="section-title" id="pictures">Pictures</div>
+        <div id="pictures_list"></div>
+
+        <div class="section-title alt" id="stats">Stats</div>
+        <div id="stats_list"></div>
 
       </div>
 
@@ -361,7 +435,161 @@
   <div class="site-footer">
     &copy; 2026 PSH League. This page is under construction.
     <span class="blink-badge">NEW</span>
+    <div id="contact_line" style="margin-top:6px;"></div>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script>
+    /* ============ PASSWORD GATE ============ */
+    var GATE_PASSWORD = "bosh420";
+    var GATE_KEY = "psh_gate_ok";
+    var gate = document.getElementById("gate");
+
+    function unlock() {
+      gate.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    if (localStorage.getItem(GATE_KEY) === "1") {
+      unlock();
+    } else {
+      document.body.style.overflow = "hidden";
+    }
+
+    function tryGate() {
+      var val = document.getElementById("gate_input").value;
+      if (val === GATE_PASSWORD) {
+        try { localStorage.setItem(GATE_KEY, "1"); } catch (e) {}
+        unlock();
+      } else {
+        document.getElementById("gate_error").textContent = "Nope. Try again.";
+        document.getElementById("gate_input").value = "";
+      }
+    }
+
+    document.getElementById("gate_btn").addEventListener("click", tryGate);
+    document.getElementById("gate_input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") tryGate();
+    });
+
+    /* ============ CONTENT RENDERING ============ */
+    function esc(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function fmtDate(d) {
+      if (!d) return "";
+      var parts = String(d).slice(0, 10).split("-");
+      if (parts.length !== 3) return esc(d);
+      var dt = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+      return dt.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    function renderBody(text) {
+      if (!text) return "";
+      try {
+        return window.marked ? marked.parse(text) : "<p>" + esc(text) + "</p>";
+      } catch (e) {
+        return "<p>" + esc(text) + "</p>";
+      }
+    }
+
+    function videoEmbed(url) {
+      if (!url) return "";
+      var yt = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+      if (yt) {
+        return '<div class="video-embed"><iframe src="https://www.youtube.com/embed/' +
+          encodeURIComponent(yt[1]) +
+          '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>';
+      }
+      var vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+      if (vm) {
+        return '<div class="video-embed"><iframe src="https://player.vimeo.com/video/' +
+          encodeURIComponent(vm[1]) + '" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>';
+      }
+      return '<p><a href="' + esc(url) + '" target="_blank" rel="noopener">Watch video &raquo;</a></p>';
+    }
+
+    function galleryHtml(list) {
+      if (!list || !list.length) return "";
+      var items = list.map(function (g) {
+        var src = typeof g === "string" ? g : (g && (g.src || g.image)) || "";
+        if (!src) return "";
+        return '<a href="' + esc(src) + '" target="_blank" rel="noopener"><img src="' +
+          esc(src) + '" alt="" loading="lazy"></a>';
+      }).join("");
+      return '<div class="gallery">' + items + "</div>";
+    }
+
+    function postHtml(p) {
+      var html = '<div class="post-box">';
+      html += '<div class="post-header">' + fmtDate(p.date) +
+        (p.author ? " &nbsp;|&nbsp; " + esc(p.author) : "") + "</div>";
+      html += '<div class="post-body">';
+      if (p.title) html += '<div class="post-title">' + esc(p.title) + "</div>";
+      if (p.image) html += '<img class="post-main-image" src="' + esc(p.image) + '" alt="" loading="lazy">';
+      if (p.video_url) html += videoEmbed(p.video_url);
+      if (p.body) html += '<div class="post-desc">' + renderBody(p.body) + "</div>";
+      html += galleryHtml(p.gallery);
+      html += "</div></div>";
+      return html;
+    }
+
+    function emptyBox(msg) {
+      return '<div class="post-box empty-box"><div class="post-body"><p class="post-desc">' +
+        esc(msg) + "</p></div></div>";
+    }
+
+    function fillSection(id, posts, emptyMsg) {
+      var el = document.getElementById(id);
+      el.innerHTML = posts.length ? posts.map(postHtml).join("") : emptyBox(emptyMsg);
+    }
+
+    function renderStandings(rows) {
+      var el = document.getElementById("stats_list");
+      if (!rows || !rows.length) {
+        el.innerHTML = emptyBox("No standings posted yet.");
+        return;
+      }
+      var body = rows.map(function (r) {
+        return "<tr><td>" + esc(r.team) + "</td><td>" + esc(r.wins) +
+          "</td><td>" + esc(r.losses) + "</td></tr>";
+      }).join("");
+      el.innerHTML = '<table class="standings-table"><thead><tr>' +
+        "<th>Team</th><th>W</th><th>L</th></tr></thead><tbody>" + body + "</tbody></table>";
+    }
+
+    function byDateDesc(a, b) {
+      return String(b.date || "").localeCompare(String(a.date || ""));
+    }
+
+    Promise.all([
+      fetch("content/posts.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { posts: [] }; }),
+      fetch("content/settings.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; })
+    ]).then(function (res) {
+      var posts = (res[0] && res[0].posts) || [];
+      var settings = res[1] || {};
+
+      if (settings.marquee_text) document.getElementById("marquee_text").textContent = settings.marquee_text;
+      if (settings.visitor_count) document.getElementById("visitor_count").textContent = settings.visitor_count;
+      if (settings.contact_number) {
+        document.getElementById("contact_line").textContent =
+          'Questions? Text "horseneck" to ' + settings.contact_number;
+      }
+
+      posts.sort(byDateDesc);
+      fillSection("blogs_list", posts.filter(function (p) { return p.type === "blog"; }), "No blog posts yet.");
+      fillSection("videos_list", posts.filter(function (p) { return p.type === "video"; }), "No videos yet.");
+      fillSection("pictures_list", posts.filter(function (p) { return p.type === "picture"; }), "No pictures yet.");
+      renderStandings(settings.standings);
+    }).catch(function () {
+      fillSection("blogs_list", [], "Could not load content.");
+      fillSection("videos_list", [], "Could not load content.");
+      fillSection("pictures_list", [], "Could not load content.");
+      renderStandings([]);
+    });
+  </script>
 
 </body>
 </html>

@@ -1,0 +1,9 @@
+{
+  "marquee_text": "Welcome to PSH League - Draft Monday September 7th at 5:30 PDT",
+  "contact_number": "add your number here",
+  "visitor_count": "000420",
+  "standings": [
+    { "team": "Team One", "wins": 0, "losses": 0 },
+    { "team": "Team Two", "wins": 0, "losses": 0 }
+  ]
+}
