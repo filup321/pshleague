@@ -1,6 +1,17 @@
 {
   "posts": [
     {
+      "type": "video",
+      "title": "PSH OFFICIAL ANNOUNCEMENT 2026",
+      "date": "2026-09-08",
+      "author": "Commissioner Connor",
+      "author_image": "/media/uploads/commissioner-connor.jpg",
+      "body": "",
+      "image": "",
+      "video_url": "https://www.youtube.com/watch?v=-lb2uRN_T3c",
+      "gallery": []
+    },
+    {
       "type": "blog",
       "title": "Welcome to the PSH League site",
       "date": "2026-09-07",
