@@ -661,8 +661,8 @@
     }
 
     Promise.all([
-      fetch("content/posts.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { posts: [] }; }),
-      fetch("content/settings.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; })
+      fetch("/api/posts", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { posts: [] }; }),
+      fetch("/api/settings", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; })
     ]).then(function (res) {
       var posts = (res[0] && res[0].posts) || [];
       var settings = res[1] || {};

@@ -1,98 +1,90 @@
 # PSH League site
 
-A plain static site (no build step) with a browser-based CMS for posting
-blogs, videos, and pictures, plus a simple password gate.
+A plain static site (no build step) with a self-serve admin page for posting
+blogs, videos, and pictures, plus a simple password gate for visitors.
 
 ```
 index.html                  the site (password gate + renders posts)
-content/posts.json          every post lives here (the CMS edits this file)
-content/settings.json       banner text, standings, contact number
-admin/                      the CMS admin page, served at /admin/
-cloudflare-oauth-worker/    tiny GitHub-login helper for the CMS
-media/uploads/              images you upload from the CMS land here
+admin/index.html             the admin page, served at /admin/ — password login,
+                              post editor, site settings, backup download
+functions/                   Cloudflare Pages Functions — the admin's backend
+  api/login.js, logout.js, session.js    password login / session cookie
+  api/posts.js, settings.js              read + write content (in KV)
+  api/upload.js                          handles photo / PDF uploads (to R2)
+  api/export.js                          "Download backup" JSON
+  files/[[path]].js                      serves uploaded files back out
+  _lib/auth.js, store.js                 shared helpers
+content/posts.json, settings.json       reference copies only — used to seed
+                                          KV the very first time; not read after that
+media/uploads/               original launch photos/PDF, still served as static files
 ```
 
 ## How posting works
 
-You open `https://your-site/admin/`, log in with GitHub, fill out a form,
-and hit **Publish**. The CMS commits the change to this repo; Cloudflare
-Pages redeploys automatically in ~30 seconds and the post is live.
+Go to `https://pshleague.com/admin`, enter the shared admin password, fill out
+the form, and hit **Publish**. The change is live within a second or two — no
+GitHub account, no Cloudflare login, nothing to redeploy.
 
 - **Blog** = title + body (markdown).
-- **Video** = paste a YouTube or Vimeo URL; it embeds automatically. Never
-  upload raw video files — put them on YouTube (unlisted) or Vimeo.
-- **Picture(s)** = use the Main image field and/or the Photo gallery list.
+- **Video** = paste a YouTube, Vimeo, or Google Drive link; it embeds
+  automatically. Videos are links only — don't upload video files.
+- **Picture(s)** = use the Main image field and/or the Photo gallery (pick
+  multiple files at once).
+- **Site settings** tab = marquee banner text, footer contact number, the
+  stats PDF, and the standings table.
+- **Download backup** grabs a JSON snapshot of everything (posts + settings)
+  any time you want a copy.
+
+Content lives in Cloudflare KV, not in this repo — the repo just holds the
+site's code. That's what makes posting instant and GitHub-free.
 
 ---
 
-## One-time setup
+## One-time setup (owner only, ~5 minutes in the Cloudflare dashboard)
 
-### 1. Put this folder on GitHub
+### 1. Push this repo to GitHub and connect it to Cloudflare Pages
 
-Create a repo (e.g. `pshleague`) and push these files to the `main` branch.
+(Already done if you're reading this on a deployed site.) Build settings:
+**Framework preset:** None · **Build command:** *(blank)* · **Build output
+directory:** `/`.
 
-### 2. Deploy to Cloudflare Pages
+### 2. Create an R2 bucket for uploads
 
-1. Cloudflare dashboard -> **Workers & Pages** -> **Create** -> **Pages** ->
-   **Connect to Git** -> pick the repo.
-2. Build settings:
-   - **Framework preset:** None
-   - **Build command:** *(leave blank)*
-   - **Build output directory:** `/`
-3. Save and deploy. You get a URL like `https://pshleague.pages.dev`.
+Cloudflare dashboard → **R2** → **Create bucket** → name it e.g. `psh-media`.
 
-### 3. Create a GitHub OAuth App (so the CMS can log in)
+Then: your Pages project → **Settings** → **Functions** → **R2 bucket
+bindings** → **Add binding** → variable name `MEDIA` → bucket `psh-media`.
 
-GitHub -> **Settings** -> **Developer settings** -> **OAuth Apps** ->
-**New OAuth App**:
+### 3. Create a KV namespace for posts/settings
 
-- **Application name:** PSH League CMS
-- **Homepage URL:** your Pages URL
-- **Authorization callback URL:** `https://YOUR-OAUTH-WORKER.workers.dev/callback`
-  (you'll get this exact URL in the next step — you can edit it here after)
+Cloudflare dashboard → **Workers & Pages** → **KV** → **Create namespace** →
+name it e.g. `psh-content`.
 
-Save. Copy the **Client ID**, then **Generate a new client secret** and copy that too.
+Then: your Pages project → **Settings** → **Functions** → **KV namespace
+bindings** → **Add binding** → variable name `CONTENT` → namespace
+`psh-content`.
 
-### 4. Deploy the OAuth worker
+### 4. Set the admin password and session secret
 
-From the `cloudflare-oauth-worker/` folder:
+Your Pages project → **Settings** → **Environment variables** → add these to
+**both** Production and Preview, as **secrets**:
 
-```bash
-cd cloudflare-oauth-worker
-npx wrangler login
-npx wrangler secret put GITHUB_CLIENT_ID       # paste the Client ID
-npx wrangler secret put GITHUB_CLIENT_SECRET   # paste the Client secret
-npx wrangler deploy
-```
+- `ADMIN_PASSWORD` — the password admins will type in at `/admin`
+- `SESSION_SECRET` — any long random string (this signs the login session;
+  it isn't typed in anywhere, just needs to be unpredictable)
 
-`wrangler deploy` prints the worker URL, e.g.
-`https://pshleague-cms-auth.YOURNAME.workers.dev`.
+### 5. Redeploy
 
-- Go back to the GitHub OAuth App and set the callback URL to
-  `https://pshleague-cms-auth.YOURNAME.workers.dev/callback`.
-
-### 5. Point the CMS at your repo + worker
-
-Edit **`admin/config.yml`**:
-
-```yaml
-backend:
-  name: github
-  repo: YOURNAME/pshleague          # <-- your repo
-  branch: main
-  base_url: https://pshleague-cms-auth.YOURNAME.workers.dev   # <-- your worker URL
-  auth_endpoint: /auth
-```
-
-Commit and push. Cloudflare redeploys.
+Trigger a new deployment (push a commit, or **Retry deployment** in the
+dashboard) so the bindings and env vars take effect.
 
 ### 6. Post something
 
-Open `https://your-site/admin/`, click **Login with GitHub**, and add a post.
+Open `https://pshleague.com/admin`, enter the password, and add a post.
 
 ---
 
-## The password gate
+## The password gate (for visitors)
 
 `index.html` shows a password box before the site. The password is set at the
 top of the `<script>` block:
@@ -101,43 +93,47 @@ top of the `<script>` block:
 var GATE_PASSWORD = "bosh420";
 ```
 
-To change it, edit that line and redeploy. Once someone enters it correctly,
-their browser remembers it (localStorage), so they only type it once.
+To change it, edit that line and redeploy. This is separate from the admin
+password above — this one just gates who can *view* the site.
 
 **This is a speed bump, not real security.** The password is visible in the
-page source, and `content/posts.json` can be fetched directly. Fine for a
-friends' league; if you ever need real protection, put **Cloudflare Access**
-(free for up to 50 users) in front of the site instead.
+page source. Fine for a friends' league; if you ever need real protection,
+put **Cloudflare Access** (free for up to 50 users) in front of the site
+instead.
 
 ---
 
-## Alternative: skip the OAuth worker with Pages CMS
-
-If deploying the worker is a hassle, you can use the hosted
-[Pages CMS](https://pagescms.org) instead: authorize its GitHub App, and it
-gives you the same kind of admin UI with no worker to run. You'd recreate the
-`admin/config.yml` fields as a `.pages.yml` file at the repo root. The site
-(`index.html`) doesn't change — it just reads `content/posts.json` either way.
-
 ## Notes on media
 
-- **Photos:** upload `.jpg` / `.png`. Phone photos in `.heic` / `.HEIC` do **not**
-  display in browsers — convert first. On a Mac: open in Preview -> File -> Export -> JPEG,
-  or `sips -s format jpeg in.heic --out out.jpg`. If a converted photo shows up
+- **Photos:** upload `.jpg` / `.png` / `.gif` / `.webp` (20MB max). Phone
+  photos in `.heic` / `.HEIC` do **not** display in browsers — convert first.
+  On a Mac: open in Preview → File → Export → JPEG, or
+  `sips -s format jpeg in.heic --out out.jpg`. If a converted photo shows up
   sideways, its EXIF "orientation" tag is fighting the pixels; re-export from
   Preview (which bakes the rotation in) and it'll be fine.
 - **Videos:** paste a link, don't upload the file.
   - YouTube / Vimeo: any normal share URL works.
-  - Google Drive: the file must be shared **"Anyone with the link"**, then paste
-    the `https://drive.google.com/file/d/.../view` URL. It embeds as a player.
-- **Stats PDF:** set it in Site settings -> "Stats PDF". It renders on the page
-  (all pages, no download) with an "open in new tab" link as a fallback.
+  - Google Drive: the file must be shared **"Anyone with the link"**, then
+    paste the `https://drive.google.com/file/d/.../view` URL. It embeds as a
+    player.
+- **Stats PDF:** upload it from the admin's Site settings tab. It renders on
+  the page (all pages, no download) with an "open in new tab" link as a
+  fallback.
 
 ## Local preview
+
+The public site alone (no admin, no API):
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000`. (The CMS admin needs the deployed worker to
-log in, but the main site renders fine locally.)
+To test the admin page and its API locally, use Wrangler instead (it
+simulates KV, R2, and Functions):
+
+```bash
+cp .dev.vars.example .dev.vars   # then edit in a real password/secret
+npx wrangler pages dev . --kv CONTENT --r2 MEDIA
+```
+
+Then open the printed `http://localhost:8788` URL.

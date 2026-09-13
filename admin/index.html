@@ -1,14 +1,695 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PSH League &mdash; Content Admin</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PSH League &mdash; Admin</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --card: #ffffff;
+    --border: #d7dbe0;
+    --text: #1a1d21;
+    --muted: #6b7280;
+    --accent: #cc0066;
+    --accent-dark: #a3004f;
+    --danger: #c0392b;
+    --ok: #1a7f37;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+  }
+  .hidden { display: none !important; }
+
+  header.topbar {
+    background: #111318;
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header.topbar h1 { margin: 0; font-size: 18px; }
+  header.topbar .actions { display: flex; gap: 8px; }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .login-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 32px;
+    width: 100%;
+    max-width: 340px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  }
+  .login-card h1 { margin: 0 0 4px; font-size: 20px; }
+  .login-card p.sub { margin: 0 0 20px; color: var(--muted); }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 18px; }
+  .tab-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 18px;
+  }
+  .card h2 { margin: 0 0 14px; font-size: 16px; }
+
+  label { display: block; font-weight: 600; margin: 14px 0 6px; }
+  label:first-child { margin-top: 0; }
+  input[type=text], input[type=password], input[type=date], input[type=number], textarea, select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    background: #fff;
+    color: var(--text);
+  }
+  textarea { min-height: 120px; resize: vertical; }
+  .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .btn:hover { background: #f0f1f3; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { background: var(--accent-dark); }
+  .btn.danger { color: var(--danger); border-color: var(--danger); background: #fff; }
+  .btn.danger:hover { background: #fdecea; }
+  .btn.ghost { background: transparent; border-color: rgba(255,255,255,.25); color: #d7dbe0; }
+  .btn.ghost:hover { color: #fff; background: rgba(255,255,255,.1); }
+  .btn:disabled { opacity: .5; cursor: default; }
+
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; }
+
+  .post-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-row:last-child { border-bottom: none; }
+  .post-row .meta { min-width: 0; }
+  .post-row .meta .type-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #eef0f3;
+    color: var(--muted);
+    margin-right: 8px;
+  }
+  .post-row .meta .title { font-weight: 600; }
+  .post-row .meta .sub { color: var(--muted); font-size: 12px; }
+  .post-row .btns { display: flex; gap: 6px; flex: none; }
+
+  .thumb-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .thumb {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(0,0,0,.65);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    width: 18px;
+    height: 18px;
+    line-height: 1;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .standings-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .standings-row input { width: auto; }
+  .standings-row input.team { flex: 1; }
+  .standings-row input.num { width: 70px; }
+
+  .error-text { color: var(--danger); font-size: 13px; margin-top: 8px; min-height: 1.2em; }
+  .status-text { color: var(--ok); font-size: 13px; margin-top: 8px; min-height: 1.2em; }
+  .empty-msg { color: var(--muted); font-style: italic; padding: 8px 0; }
+</style>
 </head>
 <body>
-  <!-- Decap CMS (default). To switch to Sveltia CMS instead, comment the line
-       below and uncomment the Sveltia one. Both read the same config.yml. -->
-  <script src="https://unpkg.com/decap-cms@3.5.0/dist/decap-cms.js"></script>
-  <!-- <script src="https://unpkg.com/@sveltia/cms@0/dist/sveltia-cms.js"></script> -->
+
+<div id="login_screen" class="login-wrap">
+  <div class="login-card">
+    <h1>PSH League Admin</h1>
+    <p class="sub">Enter the admin password to continue.</p>
+    <label for="login_password">Password</label>
+    <input type="password" id="login_password" autocomplete="current-password" autofocus>
+    <button class="btn primary" id="login_btn" style="width:100%; margin-top:14px; justify-content:center;">Log in</button>
+    <div class="error-text" id="login_error"></div>
+  </div>
+</div>
+
+<div id="dashboard" class="hidden">
+  <header class="topbar">
+    <h1>PSH League Admin</h1>
+    <div class="actions">
+      <button class="btn ghost" id="backup_btn">Download backup</button>
+      <button class="btn ghost" id="logout_btn">Log out</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="posts" type="button">Posts</button>
+      <button class="tab-btn" data-tab="settings" type="button">Site settings</button>
+    </div>
+
+    <!-- ===== POSTS TAB ===== -->
+    <div id="tab_posts">
+      <div class="card">
+        <h2 id="post_form_title">New post</h2>
+        <form id="post_form">
+          <input type="hidden" id="post_id">
+
+          <label for="post_type">Type</label>
+          <select id="post_type">
+            <option value="blog">Blog post</option>
+            <option value="video">Video</option>
+            <option value="picture">Picture(s)</option>
+          </select>
+
+          <label for="post_title">Title</label>
+          <input type="text" id="post_title">
+
+          <div class="row">
+            <div>
+              <label for="post_date">Date</label>
+              <input type="date" id="post_date">
+            </div>
+            <div>
+              <label for="post_author">Author</label>
+              <input type="text" id="post_author" placeholder="PSH League">
+            </div>
+          </div>
+
+          <label for="post_author_image">Author photo (round avatar)</label>
+          <input type="file" id="post_author_image" accept="image/*">
+          <div class="thumb-row" id="post_author_image_preview"></div>
+
+          <label for="post_body">Body (markdown, optional)</label>
+          <textarea id="post_body"></textarea>
+
+          <label for="post_image">Main image</label>
+          <input type="file" id="post_image" accept="image/*">
+          <div class="thumb-row" id="post_image_preview"></div>
+
+          <label for="post_video_url">Video URL (YouTube / Vimeo / Google Drive)</label>
+          <input type="text" id="post_video_url" placeholder="https://youtube.com/watch?v=...">
+
+          <label for="post_gallery">Photo gallery (select multiple &mdash; adds to any already there)</label>
+          <input type="file" id="post_gallery" accept="image/*" multiple>
+          <div class="thumb-row" id="post_gallery_preview"></div>
+          <div class="hint">Heads up: iPhone photos saved as .HEIC won't display in browsers &mdash; share/export as JPEG first.</div>
+
+          <div style="margin-top:18px; display:flex; gap:8px;">
+            <button type="submit" class="btn primary" id="post_submit_btn">Publish post</button>
+            <button type="button" class="btn" id="post_cancel_btn">Cancel edit</button>
+          </div>
+          <div class="error-text" id="post_error"></div>
+          <div class="status-text" id="post_status"></div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Existing posts</h2>
+        <div id="posts_list"></div>
+      </div>
+    </div>
+
+    <!-- ===== SETTINGS TAB ===== -->
+    <div id="tab_settings" class="hidden">
+      <div class="card">
+        <h2>Site settings</h2>
+        <form id="settings_form">
+          <label for="set_marquee">Scrolling banner text</label>
+          <input type="text" id="set_marquee">
+
+          <label for="set_contact">Contact number (shown in footer)</label>
+          <input type="text" id="set_contact">
+
+          <label for="set_visitors">Visitor counter (cosmetic)</label>
+          <input type="text" id="set_visitors">
+
+          <label for="set_pdf">Stats PDF</label>
+          <input type="file" id="set_pdf" accept="application/pdf">
+          <div class="hint" id="set_pdf_current"></div>
+
+          <label>Standings (only shown if no Stats PDF is set)</label>
+          <div id="standings_rows"></div>
+          <button type="button" class="btn" id="add_standing_btn">+ Add team</button>
+
+          <div style="margin-top:18px;">
+            <button type="submit" class="btn primary">Save settings</button>
+          </div>
+          <div class="error-text" id="settings_error"></div>
+          <div class="status-text" id="settings_status"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var state = {
+    posts: [],
+    settings: {},
+    editingId: null,
+    galleryItems: [],
+    authorImageUrl: "",
+    imageUrl: "",
+    pdfUrl: ""
+  };
+
+  function $(id) { return document.getElementById(id); }
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function fmtDate(d) {
+    if (!d) return "";
+    return String(d).slice(0, 10);
+  }
+
+  // Wraps fetch(): if the session cookie has expired mid-use, bounce back
+  // to the login screen instead of silently failing.
+  function api(path, opts) {
+    return fetch(path, opts || {}).then(function (r) {
+      if (r.status === 401) {
+        showLogin();
+        throw new Error("Your session expired. Please log in again.");
+      }
+      return r;
+    });
+  }
+
+  function apiJson(path, method, body) {
+    return api(path, {
+      method: method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.json().then(function (data) {
+        if (!r.ok) throw new Error(data.error || "Request failed");
+        return data;
+      });
+    });
+  }
+
+  function uploadFile(file) {
+    var fd = new FormData();
+    fd.append("file", file);
+    return api("/api/upload", { method: "POST", body: fd }).then(function (r) {
+      return r.json().then(function (data) {
+        if (!r.ok) throw new Error(data.error || "Upload failed");
+        return data.url;
+      });
+    });
+  }
+
+  /* ---------- login / logout ---------- */
+  function showLogin() {
+    $("dashboard").classList.add("hidden");
+    $("login_screen").classList.remove("hidden");
+  }
+
+  function showDashboard() {
+    $("login_screen").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    loadAll();
+  }
+
+  $("login_btn").addEventListener("click", function () {
+    var password = $("login_password").value;
+    $("login_error").textContent = "";
+    fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: password })
+    }).then(function (r) {
+      return r.json().then(function (data) { return { ok: r.ok, data: data }; });
+    }).then(function (res) {
+      if (!res.ok) {
+        $("login_error").textContent = res.data.error || "Wrong password.";
+        return;
+      }
+      $("login_password").value = "";
+      showDashboard();
+    }).catch(function () {
+      $("login_error").textContent = "Could not reach the server.";
+    });
+  });
+
+  $("login_password").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") $("login_btn").click();
+  });
+
+  $("logout_btn").addEventListener("click", function () {
+    fetch("/api/logout", { method: "POST" }).then(showLogin, showLogin);
+  });
+
+  $("backup_btn").addEventListener("click", function () {
+    window.open("/api/export", "_blank");
+  });
+
+  /* ---------- tabs ---------- */
+  var tabButtons = document.querySelectorAll(".tab-btn");
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      tabButtons.forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      $("tab_posts").classList.toggle("hidden", btn.dataset.tab !== "posts");
+      $("tab_settings").classList.toggle("hidden", btn.dataset.tab !== "settings");
+    });
+  });
+
+  /* ---------- load everything ---------- */
+  function loadAll() {
+    Promise.all([
+      api("/api/posts").then(function (r) { return r.json(); }),
+      api("/api/settings").then(function (r) { return r.json(); })
+    ]).then(function (res) {
+      state.posts = (res[0] && res[0].posts) || [];
+      state.settings = res[1] || {};
+      renderPostsList();
+      renderSettingsForm();
+    }).catch(function (e) {
+      console.error(e);
+    });
+  }
+
+  /* ---------- posts list ---------- */
+  function renderPostsList() {
+    var el = $("posts_list");
+    var sorted = state.posts.slice().sort(function (a, b) {
+      return String(b.date || "").localeCompare(String(a.date || ""));
+    });
+    if (!sorted.length) {
+      el.innerHTML = '<div class="empty-msg">No posts yet.</div>';
+      return;
+    }
+    el.innerHTML = "";
+    sorted.forEach(function (p) {
+      var row = document.createElement("div");
+      row.className = "post-row";
+      row.innerHTML =
+        '<div class="meta">' +
+          '<span class="type-badge">' + esc(p.type || "post") + '</span>' +
+          '<span class="title">' + esc(p.title || "(untitled)") + '</span><br>' +
+          '<span class="sub">' + esc(fmtDate(p.date)) + (p.author ? " &middot; " + esc(p.author) : "") + '</span>' +
+        '</div>' +
+        '<div class="btns">' +
+          '<button type="button" class="btn edit-btn">Edit</button>' +
+          '<button type="button" class="btn danger delete-btn">Delete</button>' +
+        '</div>';
+      row.querySelector(".edit-btn").addEventListener("click", function () { startEdit(p.id); });
+      row.querySelector(".delete-btn").addEventListener("click", function () { deletePost(p.id); });
+      el.appendChild(row);
+    });
+  }
+
+  function deletePost(id) {
+    if (!confirm("Delete this post? This can't be undone.")) return;
+    api("/api/posts?id=" + encodeURIComponent(id), { method: "DELETE" }).then(function (r) {
+      if (!r.ok) throw new Error("Delete failed");
+      if (state.editingId === id) resetPostForm();
+      loadAll();
+    }).catch(function (e) { alert(e.message); });
+  }
+
+  /* ---------- post form ---------- */
+  function renderThumb(containerId, url, onRemove) {
+    var el = $(containerId);
+    el.innerHTML = "";
+    if (!url) return;
+    var div = document.createElement("div");
+    div.className = "thumb";
+    div.innerHTML = '<img src="' + esc(url) + '" alt="">' + (onRemove ? '<button type="button" title="Remove">&times;</button>' : "");
+    if (onRemove) div.querySelector("button").addEventListener("click", onRemove);
+    el.appendChild(div);
+  }
+
+  function renderGalleryPreview() {
+    var el = $("post_gallery_preview");
+    el.innerHTML = "";
+    state.galleryItems.forEach(function (url, idx) {
+      var div = document.createElement("div");
+      div.className = "thumb";
+      div.innerHTML = '<img src="' + esc(url) + '" alt=""><button type="button" title="Remove">&times;</button>';
+      div.querySelector("button").addEventListener("click", function () {
+        state.galleryItems.splice(idx, 1);
+        renderGalleryPreview();
+      });
+      el.appendChild(div);
+    });
+  }
+
+  function resetPostForm() {
+    state.editingId = null;
+    state.galleryItems = [];
+    state.authorImageUrl = "";
+    state.imageUrl = "";
+    $("post_form_title").textContent = "New post";
+    $("post_submit_btn").textContent = "Publish post";
+    $("post_id").value = "";
+    $("post_type").value = "blog";
+    $("post_title").value = "";
+    $("post_date").value = new Date().toISOString().slice(0, 10);
+    $("post_author").value = "PSH League";
+    $("post_body").value = "";
+    $("post_video_url").value = "";
+    $("post_author_image").value = "";
+    $("post_image").value = "";
+    $("post_gallery").value = "";
+    $("post_error").textContent = "";
+    $("post_status").textContent = "";
+    renderThumb("post_author_image_preview", "");
+    renderThumb("post_image_preview", "");
+    renderGalleryPreview();
+  }
+
+  function startEdit(id) {
+    var p = state.posts.find(function (x) { return x.id === id; });
+    if (!p) return;
+    state.editingId = id;
+    state.galleryItems = (p.gallery || []).map(function (g) {
+      return typeof g === "string" ? g : (g && (g.src || g.image)) || "";
+    }).filter(Boolean);
+    state.authorImageUrl = p.author_image || "";
+    state.imageUrl = p.image || "";
+
+    $("post_form_title").textContent = "Edit post";
+    $("post_submit_btn").textContent = "Save changes";
+    $("post_id").value = id;
+    $("post_type").value = p.type || "blog";
+    $("post_title").value = p.title || "";
+    $("post_date").value = fmtDate(p.date) || new Date().toISOString().slice(0, 10);
+    $("post_author").value = p.author || "";
+    $("post_body").value = p.body || "";
+    $("post_video_url").value = p.video_url || "";
+    $("post_author_image").value = "";
+    $("post_image").value = "";
+    $("post_gallery").value = "";
+    $("post_error").textContent = "";
+    $("post_status").textContent = "";
+
+    renderThumb("post_author_image_preview", state.authorImageUrl, function () {
+      state.authorImageUrl = "";
+      renderThumb("post_author_image_preview", "");
+    });
+    renderThumb("post_image_preview", state.imageUrl, function () {
+      state.imageUrl = "";
+      renderThumb("post_image_preview", "");
+    });
+    renderGalleryPreview();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  $("post_cancel_btn").addEventListener("click", function () { resetPostForm(); });
+
+  $("post_form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    $("post_error").textContent = "";
+
+    var title = $("post_title").value.trim();
+    if (!title) {
+      $("post_error").textContent = "Title is required.";
+      return;
+    }
+
+    $("post_status").textContent = "Saving…";
+    $("post_submit_btn").disabled = true;
+
+    var authorImageFile = $("post_author_image").files[0];
+    var imageFile = $("post_image").files[0];
+    var galleryFiles = Array.prototype.slice.call($("post_gallery").files);
+
+    Promise.all([
+      authorImageFile ? uploadFile(authorImageFile) : Promise.resolve(state.authorImageUrl),
+      imageFile ? uploadFile(imageFile) : Promise.resolve(state.imageUrl),
+      Promise.all(galleryFiles.map(uploadFile))
+    ]).then(function (res) {
+      var authorImageUrl = res[0];
+      var imageUrl = res[1];
+      var gallery = state.galleryItems.concat(res[2]).map(function (src) { return { src: src }; });
+
+      var post = {
+        type: $("post_type").value,
+        title: title,
+        date: $("post_date").value,
+        author: $("post_author").value.trim(),
+        author_image: authorImageUrl || "",
+        body: $("post_body").value,
+        image: imageUrl || "",
+        video_url: $("post_video_url").value.trim(),
+        gallery: gallery
+      };
+
+      if (state.editingId) {
+        post.id = state.editingId;
+        return apiJson("/api/posts", "PUT", post);
+      }
+      return apiJson("/api/posts", "POST", post);
+    }).then(function () {
+      $("post_status").textContent = "Saved.";
+      resetPostForm();
+      loadAll();
+    }).catch(function (err) {
+      $("post_error").textContent = err.message || "Something went wrong.";
+      $("post_status").textContent = "";
+    }).finally(function () {
+      $("post_submit_btn").disabled = false;
+    });
+  });
+
+  /* ---------- settings form ---------- */
+  function renderSettingsForm() {
+    var s = state.settings;
+    $("set_marquee").value = s.marquee_text || "";
+    $("set_contact").value = s.contact_number || "";
+    $("set_visitors").value = s.visitor_count || "";
+    $("set_pdf").value = "";
+    $("set_pdf_current").textContent = s.stats_pdf ? "Current: " + s.stats_pdf : "No PDF uploaded yet.";
+    state.pdfUrl = s.stats_pdf || "";
+
+    var rows = $("standings_rows");
+    rows.innerHTML = "";
+    (s.standings || []).forEach(function (row) { addStandingRow(row); });
+  }
+
+  function addStandingRow(row) {
+    row = row || { team: "", wins: 0, losses: 0 };
+    var div = document.createElement("div");
+    div.className = "standings-row";
+    div.innerHTML =
+      '<input type="text" class="team" placeholder="Team name" value="' + esc(row.team) + '">' +
+      '<input type="number" class="num wins" placeholder="W" value="' + esc(row.wins) + '">' +
+      '<input type="number" class="num losses" placeholder="L" value="' + esc(row.losses) + '">' +
+      '<button type="button" class="btn danger">&times;</button>';
+    div.querySelector("button").addEventListener("click", function () { div.remove(); });
+    $("standings_rows").appendChild(div);
+  }
+
+  $("add_standing_btn").addEventListener("click", function () { addStandingRow(); });
+
+  $("settings_form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    $("settings_error").textContent = "";
+    $("settings_status").textContent = "Saving…";
+
+    var pdfFile = $("set_pdf").files[0];
+    var pdfUpload = pdfFile ? uploadFile(pdfFile) : Promise.resolve(state.pdfUrl);
+
+    pdfUpload.then(function (pdfUrl) {
+      var standings = Array.prototype.slice.call(document.querySelectorAll("#standings_rows .standings-row")).map(function (row) {
+        return {
+          team: row.querySelector(".team").value.trim(),
+          wins: parseInt(row.querySelector(".wins").value, 10) || 0,
+          losses: parseInt(row.querySelector(".losses").value, 10) || 0
+        };
+      }).filter(function (r) { return r.team; });
+
+      var settings = {
+        marquee_text: $("set_marquee").value,
+        contact_number: $("set_contact").value,
+        visitor_count: $("set_visitors").value,
+        stats_pdf: pdfUrl || "",
+        standings: standings
+      };
+      return apiJson("/api/settings", "PUT", settings);
+    }).then(function () {
+      $("settings_status").textContent = "Saved.";
+      loadAll();
+    }).catch(function (err) {
+      $("settings_error").textContent = err.message || "Something went wrong.";
+      $("settings_status").textContent = "";
+    });
+  });
+
+  /* ---------- boot ---------- */
+  resetPostForm();
+  fetch("/api/session").then(function (r) {
+    if (r.ok) { showDashboard(); } else { showLogin(); }
+  }).catch(showLogin);
+})();
+</script>
+
 </body>
 </html>
