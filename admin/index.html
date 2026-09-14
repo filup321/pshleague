@@ -129,21 +129,22 @@
   }
   .post-row:last-child { border-bottom: none; }
   .post-row .meta { min-width: 0; }
-  .post-row .meta .type-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: #eef0f3;
-    color: var(--muted);
-    margin-right: 8px;
-  }
   .post-row .meta .title { font-weight: 600; }
   .post-row .meta .sub { color: var(--muted); font-size: 12px; }
   .post-row .btns { display: flex; gap: 6px; flex: none; }
+  .post-row .btns .move-up-btn, .post-row .btns .move-down-btn {
+    padding: 9px 11px;
+  }
+
+  .list-section-heading {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+    margin: 20px 0 4px;
+  }
+  .list-section-heading:first-child { margin-top: 0; }
 
   .thumb-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .thumb {
@@ -266,6 +267,7 @@
 
       <div class="card">
         <h2>Existing posts</h2>
+        <p class="hint" style="margin-top:-8px; margin-bottom:14px;">Use ↑ / ↓ to change the order posts appear in within their section on the site.</p>
         <div id="posts_list"></div>
       </div>
     </div>
@@ -436,33 +438,80 @@
   }
 
   /* ---------- posts list ---------- */
+  // Matches the three sections on the public site. A post's position within
+  // its section here is exactly the order it renders in on the site.
+  var TYPE_SECTIONS = [
+    { type: "blog", label: "Blogs" },
+    { type: "video", label: "Videos" },
+    { type: "picture", label: "Pictures" }
+  ];
+
   function renderPostsList() {
     var el = $("posts_list");
-    var sorted = state.posts.slice().sort(function (a, b) {
-      return String(b.date || "").localeCompare(String(a.date || ""));
-    });
-    if (!sorted.length) {
-      el.innerHTML = '<div class="empty-msg">No posts yet.</div>';
-      return;
-    }
     el.innerHTML = "";
-    sorted.forEach(function (p) {
-      var row = document.createElement("div");
-      row.className = "post-row";
-      row.innerHTML =
-        '<div class="meta">' +
-          '<span class="type-badge">' + esc(p.type || "post") + '</span>' +
-          '<span class="title">' + esc(p.title || "(untitled)") + '</span><br>' +
-          '<span class="sub">' + esc(fmtDate(p.date)) + (p.author ? " &middot; " + esc(p.author) : "") + '</span>' +
-        '</div>' +
-        '<div class="btns">' +
-          '<button type="button" class="btn edit-btn">Edit</button>' +
-          '<button type="button" class="btn danger delete-btn">Delete</button>' +
-        '</div>';
-      row.querySelector(".edit-btn").addEventListener("click", function () { startEdit(p.id); });
-      row.querySelector(".delete-btn").addEventListener("click", function () { deletePost(p.id); });
-      el.appendChild(row);
+
+    TYPE_SECTIONS.forEach(function (section) {
+      var items = state.posts.filter(function (p) { return p.type === section.type; });
+
+      var heading = document.createElement("div");
+      heading.className = "list-section-heading";
+      heading.textContent = section.label + " (" + items.length + ")";
+      el.appendChild(heading);
+
+      if (!items.length) {
+        var empty = document.createElement("div");
+        empty.className = "empty-msg";
+        empty.textContent = "No " + section.label.toLowerCase() + " yet.";
+        el.appendChild(empty);
+        return;
+      }
+
+      items.forEach(function (p, idx) {
+        var row = document.createElement("div");
+        row.className = "post-row";
+        row.innerHTML =
+          '<div class="meta">' +
+            '<span class="title">' + esc(p.title || "(untitled)") + '</span><br>' +
+            '<span class="sub">' + esc(fmtDate(p.date)) + (p.author ? " &middot; " + esc(p.author) : "") + '</span>' +
+          '</div>' +
+          '<div class="btns">' +
+            '<button type="button" class="btn move-up-btn" title="Move up"' + (idx === 0 ? " disabled" : "") + '>&uarr;</button>' +
+            '<button type="button" class="btn move-down-btn" title="Move down"' + (idx === items.length - 1 ? " disabled" : "") + '>&darr;</button>' +
+            '<button type="button" class="btn edit-btn">Edit</button>' +
+            '<button type="button" class="btn danger delete-btn">Delete</button>' +
+          '</div>';
+        row.querySelector(".move-up-btn").addEventListener("click", function () { movePost(p.id, -1); });
+        row.querySelector(".move-down-btn").addEventListener("click", function () { movePost(p.id, 1); });
+        row.querySelector(".edit-btn").addEventListener("click", function () { startEdit(p.id); });
+        row.querySelector(".delete-btn").addEventListener("click", function () { deletePost(p.id); });
+        el.appendChild(row);
+      });
     });
+  }
+
+  // Swaps a post with its same-type neighbor (direction -1 = up, +1 = down),
+  // then sends the whole new order to the server.
+  function movePost(id, direction) {
+    var post = state.posts.find(function (p) { return p.id === id; });
+    if (!post) return;
+
+    var sameType = state.posts.filter(function (p) { return p.type === post.type; });
+    var idx = sameType.findIndex(function (p) { return p.id === id; });
+    var swapIdx = idx + direction;
+    if (swapIdx < 0 || swapIdx >= sameType.length) return;
+    var other = sameType[swapIdx];
+
+    var reordered = state.posts.slice();
+    var fullIdxA = reordered.findIndex(function (p) { return p.id === post.id; });
+    var fullIdxB = reordered.findIndex(function (p) { return p.id === other.id; });
+    reordered[fullIdxA] = other;
+    reordered[fullIdxB] = post;
+
+    var ids = reordered.map(function (p) { return p.id; });
+    apiJson("/api/posts", "PATCH", { ids: ids }).then(function (data) {
+      state.posts = (data && data.posts) || reordered;
+      renderPostsList();
+    }).catch(function (e) { alert(e.message); });
   }
 
   function deletePost(id) {
